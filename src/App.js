@@ -20,13 +20,30 @@ function App() {
 function Logo() {
   return <h1>far away</h1>;
 }
+
 function Form() {
+  function handleSubmit(e) {
+    e.preventDefault();
+  }
+
   return (
     <div className="add-form">
       <h3>what do u need for your trip?</h3>
+      <form onSubmit={handleSubmit}>
+        <select>
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+            <option value={num} key={num}>
+              {num}
+            </option>
+          ))}
+        </select>
+        <input type="text" placeholder="item..." />
+        <button>add</button>
+      </form>
     </div>
   );
 }
+
 function PackingList() {
   return (
     <div className="list">
