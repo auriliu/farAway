@@ -12,12 +12,24 @@ function App() {
     // delete means to update the UI
     setItems((prev) => prev.filter((item) => item.id !== id));
   }
+  function toggleItem(id) {
+    // delete means to update the UI
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  }
 
   return (
     <div className="app">
       <Logo />
       <Form onAddItem={addItem} />
-      <PackingList items={items} onDeleteItem={deleteItem} />
+      <PackingList
+        items={items}
+        onDeleteItem={deleteItem}
+        onToggleItem={toggleItem}
+      />
       <Stats />
     </div>
   );
@@ -34,6 +46,7 @@ function Form({ onAddItem }) {
   function handleSubmit(e) {
     e.preventDefault();
 
+    // cool line: if nothing is typed in, dont allow to submit.
     if (!description) return;
 
     const newItem = {
@@ -42,7 +55,6 @@ function Form({ onAddItem }) {
       id: Date.now(),
     };
 
-    console.log(newItem);
     onAddItem(newItem);
 
     setDescription("");
@@ -75,21 +87,31 @@ function Form({ onAddItem }) {
   );
 }
 
-function PackingList({ items, onDeleteItem }) {
+function PackingList({ items, onDeleteItem, onToggleItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} key={item.id} onDeleteItem={onDeleteItem} />
+          <Item
+            item={item}
+            key={item.id}
+            onDeleteItem={onDeleteItem}
+            onToggleItem={onToggleItem}
+          />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item, onDeleteItem }) {
+function Item({ item, onDeleteItem, onToggleItem }) {
   return (
     <li>
+      <input
+        type="checkbox"
+        value={item.packed}
+        onChange={() => onToggleItem(item.id)}
+      />
       <span style={item.packed ? { textDecoration: "line-through" } : null}>
         {item.quantity} {item.description}
       </span>
